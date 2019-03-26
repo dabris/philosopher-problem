@@ -1,5 +1,5 @@
 import common.BaseThread;
-
+import java.util.concurrent.ThreadLocalRandom;
 /**
  * Class Philosopher.
  * Outlines main subrutines of our virtual philosopher.
@@ -102,11 +102,11 @@ public class Philosopher extends BaseThread
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(true == false)
+			if(ThreadLocalRandom.current().nextInt(0, 5)==0)//25% chance for a philosopher to say something terribly useful
 			{
-				// Some monitor ops down here...
+				DiningPhilosophers.soMonitor.requestTalk();//request to talk
 				talk();
-				// ...
+				DiningPhilosophers.soMonitor.endTalk();//end talking
 			}
 
 			yield();
