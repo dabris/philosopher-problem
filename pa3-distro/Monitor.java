@@ -1,3 +1,7 @@
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Class Monitor
  * To synchronize dining philosophers.
@@ -11,7 +15,10 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-
+	private Condition self[];
+	private int chopstickNum;
+	private enum status{eating,thinking,sleeping,talking};//the 4 different status
+	status state[];
 
 	/**
 	 * Constructor
@@ -19,6 +26,10 @@ public class Monitor
 	public Monitor(int piNumberOfPhilosophers)
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
+		chopstickNum=piNumberOfPhilosophers;
+		self=new Condition[piNumberOfPhilosophers];//each philosopher has a self condition and state
+		state = new status[piNumberOfPhilosophers];
+		
 	}
 
 	/*
@@ -32,8 +43,19 @@ public class Monitor
 	 * Else forces the philosopher to wait()
 	 */
 	public synchronized void pickUp(final int piTID)
-	{
-		// ...
+	{//if neighbors are not eating, take the chopsticks and eat
+		if(state[piTID%chopstickNum+1]!=status.eating && state[piTID-1]!= status.eating) {
+			//change status to eating
+			state[piTID]=status.eating;
+			self[piTID].signal();
+		}else {
+			try {
+				//philosopher is forced to wait
+				self[piTID].wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
