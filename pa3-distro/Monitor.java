@@ -44,17 +44,17 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{//if neighbors are not eating, take the chopsticks and eat
-		if(state[piTID%chopstickNum+1]!=status.eating && state[piTID-1]!= status.eating) {
+		if(state[(piTID+chopstickNum)%chopstickNum]!=status.eating && state[(piTID+chopstickNum-2)%chopstickNum]!= status.eating) {
 			//change status to eating
-			state[piTID]=status.eating;
-			self[piTID].signal();
+			state[piTID-1]=status.eating;
+			//self[piTID-1].signal();
 		}else {
-			try {
-				//philosopher is forced to wait
-				self[piTID].wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				//philosopher is forced to wait
+//				self[piTID-1].wait();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 
