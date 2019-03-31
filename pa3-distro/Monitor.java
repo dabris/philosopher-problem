@@ -1,6 +1,3 @@
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Class Monitor
@@ -17,8 +14,9 @@ public class Monitor
 	 */
 	private int chopstickNum;
 	private boolean eating[];
-	private enum status{eating,thinking,sleeping,talking};//the 4 different status
-	status state[];
+	private boolean silent=true;
+//	private enum status{eating,thinking,sleeping,talking};//the 4 different status
+//	status state[];
 
 	/**
 	 * Constructor
@@ -29,7 +27,7 @@ public class Monitor
 		chopstickNum=piNumberOfPhilosophers;
 		eating=new boolean[piNumberOfPhilosophers];
 		//each philosopher has a state
-		state = new status[piNumberOfPhilosophers];
+//		state = new status[piNumberOfPhilosophers];
 		
 	}
 
@@ -44,14 +42,14 @@ public class Monitor
 	 * Else forces the philosopher to wait()
 	 */
 	public synchronized void pickUp(final int piTID)
-	{	boolean notEat=true;
-		while(notEat)//while the philosopher haven't eaten
+	{	
+		while(true)//while the philosopher haven't eaten
 			//if neighbors are not eating, take the chopsticks and eat
 		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true) {
 			//change status to eating
 			eating[piTID-1]=true;
-			//change the value of noteat now that the philosopher is eating
-			notEat=false;
+			//break out of the loop when the philosopher is eating
+			break;
 		}else {
 			try {
 				wait();
@@ -68,17 +66,26 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{	
-		eating[piTID-1]=false;
-		notifyAll();
+		eating[piTID-1]=false;//set the eating status of the philosopher to false
+		notifyAll();//let others check if they can eat
 	}
 
 	/**
-	 * Only one philopher at a time is allowed to philosophy
+	 * Only one philosopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
 	public synchronized void requestTalk()
 	{
-		// ...
+		
+		while(!silent) {//while someone is talking
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		silent=false;//else indicate that silent is false and talk
 	}
 
 	/**
@@ -87,7 +94,8 @@ public class Monitor
 	 */
 	public synchronized void endTalk()
 	{
-		// ...
+		silent=true;//it's silent again and someone can talk
+		notifyAll();//signal that someone can talk
 	}
 }
 
