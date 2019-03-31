@@ -44,10 +44,14 @@ public class Monitor
 	 * Else forces the philosopher to wait()
 	 */
 	public synchronized void pickUp(final int piTID)
-	{//if neighbors are not eating, take the chopsticks and eat
+	{	boolean notEat=true;
+		while(notEat)//while the philosopher haven't eaten
+			//if neighbors are not eating, take the chopsticks and eat
 		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true) {
 			//change status to eating
 			eating[piTID-1]=true;
+			//change the value of noteat now that the philosopher is eating
+			notEat=false;
 		}else {
 			try {
 				wait();
