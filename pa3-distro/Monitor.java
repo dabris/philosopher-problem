@@ -15,8 +15,8 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	private Condition self[];
 	private int chopstickNum;
+	private boolean eating[];
 	private enum status{eating,thinking,sleeping,talking};//the 4 different status
 	status state[];
 
@@ -27,7 +27,8 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-		self=new Condition[piNumberOfPhilosophers];//each philosopher has a self condition and state
+		eating=new boolean[piNumberOfPhilosophers];
+		//each philosopher has a state
 		state = new status[piNumberOfPhilosophers];
 		
 	}
@@ -44,17 +45,16 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{//if neighbors are not eating, take the chopsticks and eat
-		if(state[(piTID+chopstickNum)%chopstickNum]!=status.eating && state[(piTID+chopstickNum-2)%chopstickNum]!= status.eating) {
+		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true) {
 			//change status to eating
-			state[piTID-1]=status.eating;
-			//self[piTID-1].signal();
+			eating[piTID-1]=true;
 		}else {
-//			try {
-//				//philosopher is forced to wait
-//				self[piTID-1].wait();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -63,8 +63,9 @@ public class Monitor
 	 * and let others know they are available.
 	 */
 	public synchronized void putDown(final int piTID)
-	{
-		// ...
+	{	
+		eating[piTID-1]=false;
+		notifyAll();
 	}
 
 	/**
