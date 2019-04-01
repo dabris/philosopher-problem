@@ -13,10 +13,8 @@ public class Monitor
 	 * ------------
 	 */
 	private int chopstickNum;
-	private boolean eating[];
-	private boolean silent=true;
-//	private enum status{eating,thinking,sleeping,talking};//the 4 different status
-//	status state[];
+	private boolean eating[];//indicates if a given philosopher is eating or not
+	private boolean silent=true;//indicates if anyone is talking
 
 	/**
 	 * Constructor
@@ -25,9 +23,7 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-		eating=new boolean[piNumberOfPhilosophers];
-		//each philosopher has a state
-//		state = new status[piNumberOfPhilosophers];
+		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating
 		
 	}
 
