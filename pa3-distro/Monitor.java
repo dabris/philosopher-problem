@@ -12,10 +12,10 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	private int chopstickNum;
+	private int chopstickNum,sleepingPhilosopher=0;
 	private boolean eating[];//indicates if a given philosopher is eating or not
 	private boolean silent=true;//indicates if anyone is talking
-
+	
 	/**
 	 * Constructor
 	 */
@@ -32,7 +32,14 @@ public class Monitor
 	 * User-defined monitor procedures
 	 * -------------------------------
 	 */
-
+	public synchronized void startSleep() {
+		sleepingPhilosopher++;//indicates that there is one more philosopher sleeping
+	}
+	
+	public synchronized void endSleep() {
+		sleepingPhilosopher--;//signal that the philosopher has ended sleeping 
+		//System.out.println(sleepingPhilosopher);
+	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
 	 * Else forces the philosopher to wait()
@@ -73,7 +80,7 @@ public class Monitor
 	public synchronized void requestTalk()
 	{
 		
-		while(!silent) {//while someone is talking
+		while(!silent||sleepingPhilosopher>0) {//while someone is talking
 			try {
 				wait();
 			} catch (InterruptedException e) {

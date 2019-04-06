@@ -107,15 +107,12 @@ public class Philosopher extends BaseThread
 		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
 		{
 			DiningPhilosophers.soMonitor.pickUp(getTID());
-
 			eat();
-
 			DiningPhilosophers.soMonitor.putDown(getTID());
-
 			think();
-			
+			DiningPhilosophers.soMonitor.startSleep();
 			Pslpeep();
-
+			DiningPhilosophers.soMonitor.endSleep();
 			/*
 			 * TODO:
 			 * A decision is made at random whether this particular
