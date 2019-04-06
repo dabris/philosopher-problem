@@ -12,10 +12,11 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	private int chopstickNum,sleepingPhilosopher=0;
+	//did not use a array to indicate the state of each philosopher because the requestTalk and endTalk methods don't have any parameter, so that I cannot associate the state of talking with any id
+	private int chopstickNum,sleepingPhil=0;//sleepingPhil contains the number of philosophers who are sleeping
 	private boolean eating[];//indicates if a given philosopher is eating or not
 	private boolean silent=true;//indicates if anyone is talking
-	
+
 	/**
 	 * Constructor
 	 */
@@ -23,8 +24,7 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating
-		
+		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating	
 	}
 
 	/*
@@ -33,12 +33,11 @@ public class Monitor
 	 * -------------------------------
 	 */
 	public synchronized void startSleep() {
-		sleepingPhilosopher++;//indicates that there is one more philosopher sleeping
+		while(silent==false);//wait until nobody is talking to sleep	
+		sleepingPhil++;
 	}
-	
 	public synchronized void endSleep() {
-		sleepingPhilosopher--;//signal that the philosopher has ended sleeping 
-		//System.out.println(sleepingPhilosopher);
+		sleepingPhil--;
 	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
@@ -77,10 +76,8 @@ public class Monitor
 	 * Only one philosopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
-	public synchronized void requestTalk()
-	{
-		
-		while(!silent||sleepingPhilosopher>0) {//while someone is talking
+	public synchronized void requestTalk(){
+	while(silent==false || sleepingPhil>0) {//while someone is talking or already started to sleep
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -101,5 +98,4 @@ public class Monitor
 		notifyAll();//signal that someone can talk
 	}
 }
-
 // EOF

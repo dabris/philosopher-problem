@@ -113,12 +113,15 @@ public class Philosopher extends BaseThread
 			DiningPhilosophers.soMonitor.startSleep();
 			Pslpeep();
 			DiningPhilosophers.soMonitor.endSleep();
+			
 			/*
 			 * TODO:
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(ThreadLocalRandom.current().nextInt(0, 5)==0)//25% chance for a philosopher to say something terribly useful
+			if(true)
+//					ThreadLocalRandom.current().nextInt(0, 5)==0)
+//				25% chance for a philosopher to say something terribly useful
 			{
 				DiningPhilosophers.soMonitor.requestTalk();//request to talk
 				talk();
