@@ -53,16 +53,12 @@ public class Monitor
 	}
 	
 	public synchronized boolean hasPriority(final int piTID) {
-		if(piTID==1) {//no need to check if piTID==1
+		if(piTID==1) //no need to check if piTID==1
 			return true;
-		}else {//check if any of the philosopher with a higher priority is hungry
-			for(int i=0;i<piTID-1;i++) {
-				if(hungry[i]==true) {
-					return false;
-				}
-			}
-		}
-		return true;//if no one who has higher priority is hungry
+		if(piTID-1==hungry.length) 
+			if(hungry[0]!=true&&hungry[piTID-2]!=true)
+				return true;
+		return(hungry[piTID-2]==false);	
 	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
@@ -95,7 +91,7 @@ public class Monitor
 	{	
 		eating[piTID-1]=false;//set the eating status of the philosopher to false
 		hungry[piTID-1]=false;
-		//System.out.println("Hungry array: "+Arrays.toString(hungry));
+		System.out.println("Hungry array: "+Arrays.toString(hungry));
 		notifyAll();//let others check if they can eat
 	}
 
