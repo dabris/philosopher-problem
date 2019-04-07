@@ -1,5 +1,7 @@
 package AlternativeSolution;
 
+import java.util.Arrays;
+
 /**
  * Class Monitor
  * To synchronize dining philosophers.
@@ -13,10 +15,12 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	private int chopstickNum;
+	//did not use a array to indicate the state of each philosopher because the requestTalk and endTalk methods don't have any parameter, so that I cannot associate the state of talking with any id
+	private int chopstickNum,sleepingPhil=0;//sleepingPhil contains the number of philosophers who are sleeping
 	private boolean eating[];//indicates if a given philosopher is eating or not
 	private boolean silent=true;//indicates if anyone is talking
-	private boolean sleeping=false;
+	private boolean hungry[];//indicate whether a philosopher is hungry
+
 	/**
 	 * Constructor
 	 */
@@ -24,17 +28,41 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating
-		
+		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating	
+		hungry=new boolean[piNumberOfPhilosophers];//and whether they are hungry
 	}
+	
 
 	/*
 	 * -------------------------------
 	 * User-defined monitor procedures
 	 * -------------------------------
 	 */
-	public synchronized void signalSleep() {
-		sleeping=true;
+	public synchronized void startSleep() {
+		while(silent==false)//wait until nobody is talking to sleep	
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		sleepingPhil++;
+	}
+	public synchronized void endSleep() {
+		sleepingPhil--;
+		notifyAll();
+	}
+	
+	public synchronized boolean hasPriority(final int piTID) {
+		if(piTID==1) {//no need to check if piTID==1
+			return true;
+		}else {//check if any of the philosopher with a higher priority is hungry
+			for(int i=0;i<piTID-1;i++) {
+				if(hungry[i]==true) {
+					return false;
+				}
+			}
+		}
+		return true;//if no one who has higher priority is hungry
 	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
@@ -42,9 +70,10 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{	
-		while(true)//while the philosopher haven't eaten
-			//if neighbors are not eating, take the chopsticks and eat
-		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true) {
+		hungry[piTID-1]=true;
+		while(hungry[piTID-1])//while the philosopher haven't eaten
+			//if neighbors are not eating and the philosopher has priority, take the chopsticks and eat
+		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true&&hasPriority(piTID)) {
 			//change status to eating
 			eating[piTID-1]=true;
 			//break out of the loop when the philosopher is eating
@@ -53,7 +82,6 @@ public class Monitor
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -66,21 +94,21 @@ public class Monitor
 	public synchronized void putDown(final int piTID)
 	{	
 		eating[piTID-1]=false;//set the eating status of the philosopher to false
+		hungry[piTID-1]=false;
+		//System.out.println("Hungry array: "+Arrays.toString(hungry));
 		notifyAll();//let others check if they can eat
 	}
 
+	
 	/**
 	 * Only one philosopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
-	public synchronized void requestTalk()
-	{
-		
-		while(!silent) {//while someone is talking
+	public synchronized void requestTalk(){
+	while(silent==false || sleepingPhil>0) {//while someone is talking or already started to sleep
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -97,5 +125,4 @@ public class Monitor
 		notifyAll();//signal that someone can talk
 	}
 }
-
 // EOF

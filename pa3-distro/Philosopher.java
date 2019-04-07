@@ -14,7 +14,6 @@ public class Philosopher extends BaseThread
 	public static final long TIME_TO_WASTE = 1000;
 
 	public void Pslpeep() {
-
 		try
 		{
 			System.out.println("Phil "+getTID()+" has started sleeping");//phil started to sleep
