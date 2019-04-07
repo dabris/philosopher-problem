@@ -33,11 +33,17 @@ public class Monitor
 	 * -------------------------------
 	 */
 	public synchronized void startSleep() {
-		while(silent==false);//wait until nobody is talking to sleep	
+		while(silent==false)//wait until nobody is talking to sleep	
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		sleepingPhil++;
 	}
 	public synchronized void endSleep() {
 		sleepingPhil--;
+		notifyAll();
 	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.

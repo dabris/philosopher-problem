@@ -119,9 +119,7 @@ public class Philosopher extends BaseThread
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(true)
-//					ThreadLocalRandom.current().nextInt(0, 5)==0)
-//				25% chance for a philosopher to say something terribly useful
+			if(ThreadLocalRandom.current().nextInt(0, 5)==0)//25% chance for a philosopher to say something terribly useful
 			{
 				DiningPhilosophers.soMonitor.requestTalk();//request to talk
 				talk();
@@ -152,6 +150,14 @@ public class Philosopher extends BaseThread
 			"Philosopher " + getTID() + " says: " +
 			astrPhrases[(int)(Math.random() * astrPhrases.length)]
 		);
+		
+		try {
+			sleep((long)(Math.random() * 1000)+6000);//talk for at least 6 seconds
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	
+		
 	}
 }
 
