@@ -81,6 +81,7 @@ public class Monitor
 				e.printStackTrace();
 			}
 		}
+		//System.out.println("Hungry array: "+Arrays.toString(hungry)+"\nEating philosophers: "+Arrays.toString(eating));
 	}
 
 	/**
@@ -91,7 +92,6 @@ public class Monitor
 	{	
 		eating[piTID-1]=false;//set the eating status of the philosopher to false
 		hungry[piTID-1]=false;
-		System.out.println("Hungry array: "+Arrays.toString(hungry));
 		notifyAll();//let others check if they can eat
 	}
 
