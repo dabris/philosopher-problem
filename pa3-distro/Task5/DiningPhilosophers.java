@@ -128,8 +128,8 @@ public class DiningPhilosophers
 	
 	public static void leaving(Philosopher aoPhilosophers[], int iPhilosophers) {//pick random philosophers to leave
 		int leavingPhil;
-		int leftPhil=-1;
-		for(int i=0;i<(int)ThreadLocalRandom.current().nextInt(1, iPhilosophers);i++) {//generate a random number of philosophers to leave
+		int leftPhil=-1;//keep track of philosophers who left the time before
+		for(int i=0;i<(int)ThreadLocalRandom.current().nextInt(1, 2);i++) {//generate a random number of philosophers to leave
 		leavingPhil=rng.nextInt(iPhilosophers-1);//pick philosophers to leave at random
 		if(leavingPhil!=leftPhil)
 		{System.out.println("--------Philosopher "+(leavingPhil+1) + " wants to leave the table--------");
