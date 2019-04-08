@@ -90,8 +90,8 @@ public class DiningPhilosophers
 				aoPhilosophers[j].start();
 			}
 			
+			newPhil();
 			leaving(aoPhilosophers,iPhilosophers);//a random number of philosophers leaves
-			
 			
 //			System.out.println
 //			(
@@ -137,8 +137,27 @@ public class DiningPhilosophers
 		}
 		leftPhil=leavingPhil;
 		}
-}
 	}
+	
+	public static void newPhil() {
+		int numNew=(int)ThreadLocalRandom.current().nextInt(1, 5);//pick how many philosophers to add at random
+		Philosopher newPhilArr[]=new Philosopher[numNew];//give space to new philosophers
+		soMonitor.addPhil(numNew);//add philosophers to the monitor
+		
+		for(int i=0;i<newPhilArr.length;i++) {//make them start
+			newPhilArr[i]=new Philosopher();
+			System.out.println("Philosopher "+newPhilArr[i].getTID()+" is added");
+			newPhilArr[i].start();
+		}
+//		try {
+//		for(int j = 0; j < newPhilArr.length; j++)//main wait for children to die
+//			newPhilArr[j].join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+		
+	}
+}//class DiningPhilosophers
 
 class SmallerThan0Exception extends Exception {
 	

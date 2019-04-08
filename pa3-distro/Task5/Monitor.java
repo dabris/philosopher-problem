@@ -124,5 +124,13 @@ public class Monitor
 		silent=true;//it's silent again and someone can talk
 		notifyAll();//signal that someone can talk
 	}
+	
+	public synchronized void addPhil(int numPhil) {
+		chopstickNum=chopstickNum+numPhil;
+		for(int i=0;i<numPhil;i++) {
+			eating.add(false);
+			hungry.add(false);
+		}
+	}
 }
 // EOF

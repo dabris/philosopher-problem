@@ -135,9 +135,11 @@ public class Philosopher extends BaseThread
 		
 	} // run()
 	
-	public void leave() {
+	public void leave() {//set exit to true when a philosopher is leaving
 		exit=true;
 	}
+	
+
 
 	/**
 	 * Prints out a phrase from the array of phrases at random.
