@@ -18,7 +18,8 @@ public class Monitor
 	 */
 	//did not use a array to indicate the state of each philosopher because the requestTalk and endTalk methods don't have any parameter, so that I cannot associate the state of talking with any id
 	private int chopstickNum,sleepingPhil=0;//sleepingPhil contains the number of philosophers who are sleeping
-	private ArrayList<Boolean> eating,hungry;//indicates if a given philosopher is eating, hungry
+	private ArrayList<Boolean> eating=new ArrayList<Boolean>()
+	,hungry=new ArrayList<Boolean>();//indicates if a given philosopher is eating, hungry
 	private boolean silent=true;//indicates if anyone is talking
 	
 
@@ -29,7 +30,10 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-	
+		for(int i=0;i<piNumberOfPhilosophers;i++) {
+			eating.add(false);
+			hungry.add(false);
+		}
 	}
 	
 
