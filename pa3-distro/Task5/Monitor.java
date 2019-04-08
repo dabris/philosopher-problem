@@ -1,5 +1,6 @@
 package Task5;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -17,9 +18,9 @@ public class Monitor
 	 */
 	//did not use a array to indicate the state of each philosopher because the requestTalk and endTalk methods don't have any parameter, so that I cannot associate the state of talking with any id
 	private int chopstickNum,sleepingPhil=0;//sleepingPhil contains the number of philosophers who are sleeping
-	private boolean eating[];//indicates if a given philosopher is eating or not
+	private ArrayList<Boolean> eating,hungry;//indicates if a given philosopher is eating, hungry
 	private boolean silent=true;//indicates if anyone is talking
-	private boolean hungry[];//indicate whether a philosopher is hungry
+	
 
 	/**
 	 * Constructor
@@ -28,8 +29,7 @@ public class Monitor
 	{
 		// TODO: set appropriate number of chopsticks based on the # of philosophers
 		chopstickNum=piNumberOfPhilosophers;
-		eating=new boolean[piNumberOfPhilosophers];//each philosopher has a boolean that indicates whether they are eating	
-		hungry=new boolean[piNumberOfPhilosophers];//and whether they are hungry
+	
 	}
 	
 
@@ -55,10 +55,10 @@ public class Monitor
 	public synchronized boolean hasPriority(final int piTID) {
 		if(piTID==1) //no need to check if piTID==1
 			return true;
-		if(piTID-1==hungry.length) 
-			if(hungry[0]!=true&&hungry[piTID-2]!=true)
+		if(piTID-1==hungry.size()) 
+			if(hungry.get(0)!=true&&hungry.get(piTID-2)!=true)
 				return true;
-		return(hungry[piTID-2]==false);	
+		return(hungry.get(piTID-2)==false);	
 	}
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
@@ -66,12 +66,12 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{	
-		hungry[piTID-1]=true;
-		while(hungry[piTID-1])//while the philosopher haven't eaten
+		hungry.set(piTID-1,true);
+		while(hungry.get(piTID-1))//while the philosopher haven't eaten
 			//if neighbors are not eating and the philosopher has priority, take the chopsticks and eat
-		if(eating[(piTID+chopstickNum)%chopstickNum]!=true && eating[(piTID+chopstickNum-2)%chopstickNum]!= true&&hasPriority(piTID)) {
+		if(eating.get((piTID+chopstickNum)%chopstickNum)!=true && eating.get((piTID+chopstickNum-2)%chopstickNum)!= true&&hasPriority(piTID)) {
 			//change status to eating
-			eating[piTID-1]=true;
+			eating.set(piTID-1,true);
 			//break out of the loop when the philosopher is eating
 			break;
 		}else {
@@ -90,8 +90,8 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{	
-		eating[piTID-1]=false;//set the eating status of the philosopher to false
-		hungry[piTID-1]=false;
+		eating.set(piTID-1,false);//set the eating status of the philosopher to false
+		hungry.set(piTID-1,false);
 		notifyAll();//let others check if they can eat
 	}
 
