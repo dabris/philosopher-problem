@@ -90,7 +90,7 @@ public class DiningPhilosophers
 				aoPhilosophers[j].start();
 			}
 			
-			newPhil();
+			Philosopher[] newPhilArr=newPhil();//call the method to add new philosophers
 			leaving(aoPhilosophers,iPhilosophers);//a random number of philosophers leaves
 			
 //			System.out.println
@@ -103,6 +103,10 @@ public class DiningPhilosophers
 			// I mean, philosophers to finish their dinner.
 			for(int j = 0; j < iPhilosophers; j++)
 				aoPhilosophers[j].join();
+
+			for(int j = 0; j < newPhilArr.length; j++)//main wait for newPhils to finish dinner
+				newPhilArr[j].join();
+
 
 			System.out.println("All philosophers have left. System terminates normally.");
 		}
@@ -128,35 +132,25 @@ public class DiningPhilosophers
 	
 	public static void leaving(Philosopher aoPhilosophers[], int iPhilosophers) {//pick random philosophers to leave
 		int leavingPhil;
-		int leftPhil=-1;//keep track of philosophers who left the time before
-		for(int i=0;i<(int)ThreadLocalRandom.current().nextInt(1, 2);i++) {//generate a random number of philosophers to leave
+		for(int i=0;i<(int)ThreadLocalRandom.current().nextInt(2, iPhilosophers);i++) {//generate a random number of philosophers to leave
 		leavingPhil=rng.nextInt(iPhilosophers-1);//pick philosophers to leave at random
-		if(leavingPhil!=leftPhil)
-		{System.out.println("--------Philosopher "+(leavingPhil+1) + " wants to leave the table--------");
 		aoPhilosophers[leavingPhil].leave();//make the philosopher leave
-		}
-		leftPhil=leavingPhil;
 		}
 	}
 	
-	public static void newPhil() {
-		int numNew=(int)ThreadLocalRandom.current().nextInt(1, 5);//pick how many philosophers to add at random
+	public static Philosopher[] newPhil() {
+		int numNew=(int)ThreadLocalRandom.current().nextInt(2, 6);//pick how many philosophers to add at random
 		Philosopher newPhilArr[]=new Philosopher[numNew];//give space to new philosophers
 		soMonitor.addPhil(numNew);//add philosophers to the monitor
 		
-		for(int i=0;i<newPhilArr.length;i++) {//make them start
-			newPhilArr[i]=new Philosopher();
+		for(int i=0;i<newPhilArr.length;i++) {
+			newPhilArr[i]=new Philosopher();//create new philosophers
 			System.out.println("Philosopher "+newPhilArr[i].getTID()+" is added");
-			newPhilArr[i].start();
-		}
-//		try {
-//		for(int j = 0; j < newPhilArr.length; j++)//main wait for children to die
-//			newPhilArr[j].join();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-		
+			newPhilArr[i].start();//make the new threads run
+		}	
+		return newPhilArr;
 	}
+	
 }//class DiningPhilosophers
 
 class SmallerThan0Exception extends Exception {

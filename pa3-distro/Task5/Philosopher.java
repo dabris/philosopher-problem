@@ -127,11 +127,10 @@ public class Philosopher extends BaseThread
 				DiningPhilosophers.soMonitor.endTalk();//end talking
 			}
 			
-			if(exit) 
-				System.out.println("----------Phil "+getTID()+" left the table :(----------");
-			yield();
+			
 		}
-		
+		if(exit) 
+			System.out.println("----------Phil "+getTID()+" left the table :(----------");
 		
 	} // run()
 	
