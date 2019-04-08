@@ -128,7 +128,7 @@ public class Philosopher extends BaseThread
 			}
 			
 			if(exit) 
-				System.out.println("Phil "+getTID()+" left the table :(");
+				System.out.println("----------Phil "+getTID()+" left the table :(----------");
 			yield();
 		}
 		

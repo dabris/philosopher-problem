@@ -1,6 +1,7 @@
 package Task5;
 
 import java.util.InputMismatchException;
+import java.util.concurrent.ThreadLocalRandom;
 
 //to compile:
 //cd pa3-distro
@@ -85,9 +86,10 @@ public class DiningPhilosophers
 				aoPhilosophers[j] = new Philosopher();
 				aoPhilosophers[j].start();
 			}
-
-			int leavingPhil=(int)Math.random()*aoPhilosophers.length;
-			System.out.println(leavingPhil);
+			
+			
+			int leavingPhil=(int)ThreadLocalRandom.current().nextInt(0, iPhilosophers);
+			System.out.println("--------Philosopher "+(leavingPhil+1) + " wants to leave the table--------");
 			aoPhilosophers[leavingPhil].leave();
 			
 //			System.out.println
