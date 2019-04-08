@@ -1,6 +1,7 @@
 package Task5;
 
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 //to compile:
@@ -25,7 +26,7 @@ public class DiningPhilosophers
 	 * This default may be overridden from the command line
 	 */
 	public static final int DEFAULT_NUMBER_OF_PHILOSOPHERS = 4;
-
+	private static Random rng = new Random(); 
 	/**
 	 * Dining "iterations" per philosopher thread
 	 * while they are socializing there
@@ -57,6 +58,7 @@ public class DiningPhilosophers
 			 */
 			int iPhilosophers=DEFAULT_NUMBER_OF_PHILOSOPHERS;
 			
+			
 			try {
 			 iPhilosophers = Integer.parseInt(argv[0]);//take value from command line
 			 if(iPhilosophers<1) {//check if it's a positive integer
@@ -68,6 +70,7 @@ public class DiningPhilosophers
 			}catch(ArrayIndexOutOfBoundsException e) {//if no argument is given, just take default value
 			}
 
+			
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
@@ -87,10 +90,8 @@ public class DiningPhilosophers
 				aoPhilosophers[j].start();
 			}
 			
+			leaving(aoPhilosophers,iPhilosophers);//a random number of philosophers leaves
 			
-			int leavingPhil=(int)ThreadLocalRandom.current().nextInt(0, iPhilosophers);
-			System.out.println("--------Philosopher "+(leavingPhil+1) + " wants to leave the table--------");
-			aoPhilosophers[leavingPhil].leave();
 			
 //			System.out.println
 //			(
@@ -124,7 +125,20 @@ public class DiningPhilosophers
 		System.err.println("Stack Trace      : ");
 		poException.printStackTrace(System.err);
 	}
+	
+	public static void leaving(Philosopher aoPhilosophers[], int iPhilosophers) {//pick random philosophers to leave
+		int leavingPhil;
+		int leftPhil=-1;
+		for(int i=0;i<(int)ThreadLocalRandom.current().nextInt(1, iPhilosophers);i++) {//generate a random number of philosophers to leave
+		leavingPhil=rng.nextInt(iPhilosophers-1);//pick philosophers to leave at random
+		if(leavingPhil!=leftPhil)
+		{System.out.println("--------Philosopher "+(leavingPhil+1) + " wants to leave the table--------");
+		aoPhilosophers[leavingPhil].leave();//make the philosopher leave
+		}
+		leftPhil=leavingPhil;
+		}
 }
+	}
 
 class SmallerThan0Exception extends Exception {
 	
