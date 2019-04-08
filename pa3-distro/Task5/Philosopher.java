@@ -13,7 +13,7 @@ public class Philosopher extends BaseThread
 	 * Max time an action can take (in milliseconds)
 	 */
 	public static final long TIME_TO_WASTE = 1000;
-	static volatile boolean exit = false; //to indicate whether a thread should exit
+	private boolean exit = false; //to indicate whether a thread should exit
 	
 	public void Pslpeep() {
 		try
@@ -105,8 +105,7 @@ public class Philosopher extends BaseThread
 	 */
 	public void run()
 	{ 
-		while (!exit) {
-		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
+		for(int i = 0; i < DiningPhilosophers.DINING_STEPS && !exit; i++)//the philosopher must putdown the chopstick, wake up before they can leave
 		{
 			DiningPhilosophers.soMonitor.pickUp(getTID());
 			eat();
@@ -121,19 +120,22 @@ public class Philosopher extends BaseThread
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(ThreadLocalRandom.current().nextInt(0, 5)==0)//25% chance for a philosopher to say something terribly useful
+			if(ThreadLocalRandom.current().nextInt(0, 5)==0 && !exit)//25% chance for a philosopher to say something terribly useful
 			{
 				DiningPhilosophers.soMonitor.requestTalk();//request to talk
 				talk();
 				DiningPhilosophers.soMonitor.endTalk();//end talking
 			}
-
+			
+			if(exit) 
+				System.out.println("Phil "+getTID()+" left the table :(");
 			yield();
 		}
-		}
+		
+		
 	} // run()
 	
-	public void kill() {
+	public void leave() {
 		exit=true;
 	}
 

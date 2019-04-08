@@ -86,6 +86,10 @@ public class DiningPhilosophers
 				aoPhilosophers[j].start();
 			}
 
+			int leavingPhil=(int)Math.random()*aoPhilosophers.length;
+			System.out.println(leavingPhil);
+			aoPhilosophers[leavingPhil].leave();
+			
 //			System.out.println
 //			(
 //				iPhilosophers +
