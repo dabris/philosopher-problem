@@ -1,3 +1,4 @@
+package Task6;
 import common.BaseThread;
 import java.util.concurrent.ThreadLocalRandom;
 /**
@@ -12,7 +13,18 @@ public class Philosopher extends BaseThread
 	 * Max time an action can take (in milliseconds)
 	 */
 	public static final long TIME_TO_WASTE = 1000;
-
+	private boolean exit = false; //to indicate whether a thread should exit
+	
+	public void usePepper() {//1/2 chances for a philosopher to use a pepper shaker
+		if(ThreadLocalRandom.current().nextInt(0, 1)==0) {
+		DiningPhilosophers.soMonitor.requestPepper();
+		System.out.println("%%%%%%%%%%%%Philosopher "+getTID()+ " is using a pepper shaker%%%%%%%%%%%%%");
+		System.out.println( "%%%%%%%%%%%%%%%%%% "+DiningPhilosophers.soMonitor.availableShaker() +" shaker left on the table%%%%%%%%%%%%%%%%%%");
+		DiningPhilosophers.soMonitor.putDownPepper();
+		System.out.println( "%%%%%%%%%%%%%%%% "+DiningPhilosophers.soMonitor.availableShaker() +" shaker(s) are now available%%%%%%%%%%%%%%%%%");
+		}
+		
+	}
 	public void Pslpeep() {
 		try
 		{
@@ -44,6 +56,8 @@ public class Philosopher extends BaseThread
 			System.out.println("Phil "+getTID()+" has started eating");//phil started to eat
 			yield();
 			sleep((long)(Math.random() * TIME_TO_WASTE));
+			yield();
+			usePepper();
 			yield();
 			System.out.println("Phil "+getTID()+" is done eating");//phil is done eating
 		}
@@ -102,8 +116,8 @@ public class Philosopher extends BaseThread
 	 * No, this is not the act of running, just the overridden Thread.run()
 	 */
 	public void run()
-	{
-		for(int i = 0; i < DiningPhilosophers.DINING_STEPS; i++)
+	{ 
+		for(int i = 0; i < DiningPhilosophers.DINING_STEPS && !exit; i++)//the philosopher must putdown the chopstick, wake up before they can leave
 		{
 			DiningPhilosophers.soMonitor.pickUp(getTID());
 			eat();
@@ -118,16 +132,25 @@ public class Philosopher extends BaseThread
 			 * A decision is made at random whether this particular
 			 * philosopher is about to say something terribly useful.
 			 */
-			if(ThreadLocalRandom.current().nextInt(0, 5)==0)//25% chance for a philosopher to say something terribly useful
+			if(ThreadLocalRandom.current().nextInt(0, 5)==0 && !exit)//25% chance for a philosopher to say something terribly useful
 			{
 				DiningPhilosophers.soMonitor.requestTalk();//request to talk
 				talk();
 				DiningPhilosophers.soMonitor.endTalk();//end talking
 			}
-
-			yield();
+			
+			
 		}
+		if(exit) 
+			System.out.println("----------Phil "+getTID()+" left the table :(----------");
+		
 	} // run()
+	
+	public void leave() {//set exit to true when a philosopher is leaving
+		exit=true;
+	}
+	
+
 
 	/**
 	 * Prints out a phrase from the array of phrases at random.
@@ -152,8 +175,11 @@ public class Philosopher extends BaseThread
 		
 		try {
 			sleep((long)(Math.random() * 1000)+6000);//talk for at least 6 seconds
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (InterruptedException e) {			//this might make the executions stop in the middle 
+			e.printStackTrace();					//but the goal is accomplished:other philosophers' states can be updated 
+													//while the philosopher is talking
+													//if this executes right after the sentence is print, then the other philosophers' states cannot be updated,
+													//meaning the other philosophers cannot update their states while the philosopher is talking
 		}
 	
 		

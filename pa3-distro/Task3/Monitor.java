@@ -1,4 +1,4 @@
-package AlternativeSolution;
+package Task3;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package AlternativeSolution;
+package Task1_2;
 import common.BaseThread;
 import java.util.concurrent.ThreadLocalRandom;
 /**
@@ -153,11 +153,8 @@ public class Philosopher extends BaseThread
 		
 		try {
 			sleep((long)(Math.random() * 1000)+6000);//talk for at least 6 seconds
-		} catch (InterruptedException e) {			//this might make the executions stop in the middle 
-			e.printStackTrace();					//but the goal is accomplished:other philosophers' states can be updated 
-													//while the philosopher is talking
-													//if this executes right after the sentence is print, then the other philosophers' states cannot be updated,
-													//meaning the other philosophers cannot update their states while the philosopher is talking
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	
 		

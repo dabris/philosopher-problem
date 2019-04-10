@@ -1,3 +1,4 @@
+package Task1_2;
 
 /**
  * Class Monitor
